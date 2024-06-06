@@ -1,0 +1,12 @@
+go mod init merchant-payment-api = 
+    File go.mod file untuk manajemen dependensi, berisi informasi tentang project modul Go, termasuk:
+    -) Path modul (merchant-payment-api)
+    -) Dependensi
+    -) Versi modul dependensi
+
+go get github.com/lib/pq = 
+    download dan install pq driver(go driver buat postgresql)
+    file go.sum buat dependency management,  namun buat nyimpan konten modul spesifik yang dipake/diterima
+
+struct = tipe data yang dibuat untuk mengelompokkan variabel terkait di bawah satu nama (sama seperti class)
+method struct dibuat dengan func (alias *NamaStruct) NamaMethod() returnType {} , kalo returnType ga diberi berarti void
