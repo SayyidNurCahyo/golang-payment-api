@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"merchant-payment-api/config"
+	// "merchant-payment-api/model"
+	"merchant-payment-api/repository"
+
 	_ "github.com/lib/pq"
 )
 
@@ -23,5 +26,23 @@ func main() {
 	if err!=nil {
 		fmt.Println(err)
 	}
-	con.Conn()
+	db := con.Conn()
+	productRepo := repository.NewProductRepo(db)
+	// err = productRepo.DeleteById(2)
+	// if err!=nil{
+	// 	fmt.Println(err)
+	// }
+	// err = productRepo.Update(model.Product{Id: 2, Name: "baju", Price: 50000})
+	// if err!=nil{
+	// 	fmt.Println(err)
+	// }
+	product, err := productRepo.FindAll()
+	if err!=nil{
+		fmt.Println(err)
+	}
+	fmt.Println(product)
+	// productRepo.Save(model.Product{
+	// 	Name: "laptop",
+	// 	Price: 10000000,
+	// })
 }
