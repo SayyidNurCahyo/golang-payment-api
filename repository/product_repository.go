@@ -6,8 +6,9 @@ import (
 )
 
 type ProductRepository interface {
-	Save(product model.Product) error // insert
+	Save(product model.Product) error
 	FindById(id int) (model.Product, error)
+	FindByName(name string) (model.Product, error)
 	FindAll() ([]model.Product, error)
 	Update(product model.Product) error
 	DeleteById(id int) error
@@ -30,14 +31,14 @@ func (p *productRepository) DeleteById(id int) error {
 }
 
 func (p *productRepository) FindAll() ([]model.Product, error) {
-	rows, err := p.db.Query("select * from product")
+	rows, err := p.db.Query("select p.* from product as p join merchant as m on m.id=p.merchant_id")
 	if err!=nil{
 		return nil, err
 	}
 	var products []model.Product
 	for rows.Next() {
 		var product model.Product
-		err := rows.Scan(&product.Id, &product.Name, &product.Price)
+		err := rows.Scan(&product.Id, &product.Merchant.Id, &product.Name, &product.Price)
 		if err!=nil{
 			return nil,err
 		}
@@ -47,10 +48,21 @@ func (p *productRepository) FindAll() ([]model.Product, error) {
 }
 
 func (p *productRepository) FindById(id int) (model.Product, error) {
-	row := p.db.QueryRow("select * from product where id=$1", id)
+	row := p.db.QueryRow("select p.* from product as p join merchant as m on m.id=p.merchant_id where p.id=$1", id)
 	var product model.Product
 	// & buat menimpa data di product (di set)
-	err := row.Scan(&product.Id, &product.Name, &product.Price)
+	err := row.Scan(&product.Id, &product.Merchant.Id, &product.Name, &product.Price)
+	if err!= nil{
+		return model.Product{}, err
+	}
+	return product, nil
+}
+
+func (p *productRepository) FindByName(name string) (model.Product, error) {
+	row := p.db.QueryRow("select p.* from product as p join merchant as m on m.id=p.merchant_id where p.name ilike '%$1%'", name)
+	var product model.Product
+	// & buat menimpa data di product (di set)
+	err := row.Scan(&product.Id, &product.Merchant.Id, &product.Name, &product.Price)
 	if err!= nil{
 		return model.Product{}, err
 	}
@@ -58,7 +70,7 @@ func (p *productRepository) FindById(id int) (model.Product, error) {
 }
 
 func (p *productRepository) Save(product model.Product) error {
-	_, err := p.db.Exec("insert into product(name, price) values ($1, $2)", product.Name, product.Price)
+	_, err := p.db.Exec("insert into product(merchant_id, name, price) values ($1, $2, $3)", product.Merchant.Id, product.Name, product.Price)
 	if err!=nil{
 		return err
 	}
