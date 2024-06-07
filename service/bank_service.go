@@ -8,9 +8,9 @@ import (
 
 type BankService interface {
 	Create(payload model.Bank) error
-	Delete(id int) error
+	Delete(id string) error
 	FindAll() ([]model.Bank, error)
-	FindById(id int) (model.Bank, error)
+	FindById(id string) (model.Bank, error)
 	Update(payload model.Bank) error
 }
 
@@ -30,7 +30,7 @@ func (m *bankService) Create(payload model.Bank) error {
 	return nil
 }
 
-func (m *bankService) Delete(id int) error {
+func (m *bankService) Delete(id string) error {
 	bank, err := m.FindById(id)
 	if err!=nil{
 		return fmt.Errorf("bank not found")
@@ -51,7 +51,7 @@ func (m *bankService) FindAll() ([]model.Bank, error) {
 	return banks, nil
 }
 
-func (m *bankService) FindById(id int) (model.Bank, error) {
+func (m *bankService) FindById(id string) (model.Bank, error) {
 	bank, err := m.repo.FindById(id)
 	if err!=nil{
 		return model.Bank{}, fmt.Errorf("bank not found")
@@ -60,7 +60,7 @@ func (m *bankService) FindById(id int) (model.Bank, error) {
 }
 
 func (m *bankService) Update(payload model.Bank) error {
-	if payload.Id == 0{
+	if payload.Id == ""{
 		return fmt.Errorf("id is required")
 	}
 	if payload.Name == ""{

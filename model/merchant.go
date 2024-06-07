@@ -1,7 +1,7 @@
 package model
 
 type Merchant struct{
-	Id int
+	Id string
 	Name string
 	PhoneNumber string
 	Address string

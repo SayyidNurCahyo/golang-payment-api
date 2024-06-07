@@ -7,17 +7,17 @@ import (
 
 type BankRepository interface {
 	Save(bank model.Bank) error
-	FindById(id int) (model.Bank, error)
+	FindById(id string) (model.Bank, error)
 	FindAll() ([]model.Bank, error)
 	Update(bank model.Bank) error
-	DeleteById(id int) error
+	DeleteById(id string) error
 }
 
 type bankRepository struct {
 	db *sql.DB
 }
 
-func (m *bankRepository) DeleteById(id int) error {
+func (m *bankRepository) DeleteById(id string) error {
 	_, errFind := m.FindById(id)
 	if errFind != nil {
 		return errFind
@@ -46,7 +46,7 @@ func (m *bankRepository) FindAll() ([]model.Bank, error) {
 	return banks, nil
 }
 
-func (m *bankRepository) FindById(id int) (model.Bank, error) {
+func (m *bankRepository) FindById(id string) (model.Bank, error) {
 	row := m.db.QueryRow("select * from bank where id=$1", id)
 	var bank model.Bank
 	err := row.Scan(&bank.Id, &bank.Name)

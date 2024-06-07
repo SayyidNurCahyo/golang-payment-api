@@ -8,9 +8,9 @@ import (
 
 type ProductService interface {
 	Create(payload model.Product) error
-	Delete(id int) error
+	Delete(id string) error
 	FindAll() ([]model.Product, error)
-	FindById(id int) (model.Product, error)
+	FindById(id string) (model.Product, error)
 	Update(payload model.Product) error
 }
 
@@ -27,7 +27,7 @@ func (p *productService) Create(payload model.Product) error {
 	if payload.Name==""{
 		return fmt.Errorf("name is required")
 	}
-	if payload.Merchant.Id==0{
+	if payload.Merchant.Id==""{
 		return fmt.Errorf("merchant id is required")
 	}
 
@@ -44,7 +44,7 @@ func (p *productService) Create(payload model.Product) error {
 }
 
 // Delete implements ProductService.
-func (p *productService) Delete(id int) error {
+func (p *productService) Delete(id string) error {
 	product, err := p.FindById(id)
 	if err!=nil{
 		return fmt.Errorf("product not found")
@@ -67,7 +67,7 @@ func (p *productService) FindAll() ([]model.Product, error) {
 }
 
 // FindById implements ProductService.
-func (p *productService) FindById(id int) (model.Product, error) {
+func (p *productService) FindById(id string) (model.Product, error) {
 	product, err := p.repo.FindById(id)
 	if err!=nil{
 		return model.Product{}, fmt.Errorf("product not found")
@@ -77,7 +77,7 @@ func (p *productService) FindById(id int) (model.Product, error) {
 
 // Update implements ProductService.
 func (p *productService) Update(payload model.Product) error {
-	if payload.Id == 0{
+	if payload.Id == ""{
 		return fmt.Errorf("id is required")
 	}
 	if payload.Name == ""{
@@ -86,7 +86,7 @@ func (p *productService) Update(payload model.Product) error {
 	if payload.Price <=0{
 		return fmt.Errorf("price is required")
 	}
-	if payload.Merchant.Id == 0{
+	if payload.Merchant.Id == ""{
 		return fmt.Errorf("merchant id is required")
 	}
 

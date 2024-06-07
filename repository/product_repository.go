@@ -7,18 +7,18 @@ import (
 
 type ProductRepository interface {
 	Save(product model.Product) error
-	FindById(id int) (model.Product, error)
+	FindById(id string) (model.Product, error)
 	FindByName(name string) (model.Product, error)
 	FindAll() ([]model.Product, error)
 	Update(product model.Product) error
-	DeleteById(id int) error
+	DeleteById(id string) error
 }
 
 type productRepository struct {
 	db *sql.DB
 }
 
-func (p *productRepository) DeleteById(id int) error {
+func (p *productRepository) DeleteById(id string) error {
 	_, errFind := p.FindById(id)
 	if errFind!=nil{
 		return errFind
@@ -47,7 +47,7 @@ func (p *productRepository) FindAll() ([]model.Product, error) {
 	return products, nil
 }
 
-func (p *productRepository) FindById(id int) (model.Product, error) {
+func (p *productRepository) FindById(id string) (model.Product, error) {
 	row := p.db.QueryRow("select p.* from product as p join merchant as m on m.id=p.merchant_id where p.id=$1", id)
 	var product model.Product
 	// & buat menimpa data di product (di set)

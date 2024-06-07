@@ -7,17 +7,17 @@ import (
 
 type MerchantRepository interface {
 	Save(merchant model.Merchant) error
-	FindById(id int) (model.Merchant, error)
+	FindById(id string) (model.Merchant, error)
 	FindAll() ([]model.Merchant, error)
 	Update(merchant model.Merchant) error
-	DeleteById(id int) error
+	DeleteById(id string) error
 }
 
 type merchantRepository struct {
 	db *sql.DB
 }
 
-func (m *merchantRepository) DeleteById(id int) error {
+func (m *merchantRepository) DeleteById(id string) error {
 	_, errFind := m.FindById(id)
 	if errFind != nil {
 		return errFind
@@ -46,7 +46,7 @@ func (m *merchantRepository) FindAll() ([]model.Merchant, error) {
 	return merchants, nil
 }
 
-func (m *merchantRepository) FindById(id int) (model.Merchant, error) {
+func (m *merchantRepository) FindById(id string) (model.Merchant, error) {
 	row := m.db.QueryRow("select * from merchant where id=$1", id)
 	var merchant model.Merchant
 	err := row.Scan(&merchant.Id, &merchant.Name, &merchant.PhoneNumber, &merchant.Address)

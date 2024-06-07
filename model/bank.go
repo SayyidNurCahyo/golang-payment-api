@@ -1,6 +1,6 @@
 package model
 
 type Bank struct{
-	Id int
+	Id string
 	Name string
 }

@@ -8,9 +8,9 @@ import (
 
 type MerchantService interface {
 	Create(payload model.Merchant) error
-	Delete(id int) error
+	Delete(id string) error
 	FindAll() ([]model.Merchant, error)
-	FindById(id int) (model.Merchant, error)
+	FindById(id string) (model.Merchant, error)
 	Update(payload model.Merchant) error
 }
 
@@ -36,7 +36,7 @@ func (m *merchantService) Create(payload model.Merchant) error {
 	return nil
 }
 
-func (m *merchantService) Delete(id int) error {
+func (m *merchantService) Delete(id string) error {
 	merchant, err := m.FindById(id)
 	if err!=nil{
 		return fmt.Errorf("merchant not found")
@@ -57,7 +57,7 @@ func (m *merchantService) FindAll() ([]model.Merchant, error) {
 	return merchants, nil
 }
 
-func (m *merchantService) FindById(id int) (model.Merchant, error) {
+func (m *merchantService) FindById(id string) (model.Merchant, error) {
 	merchant, err := m.repo.FindById(id)
 	if err!=nil{
 		return model.Merchant{}, fmt.Errorf("merchant not found")
@@ -66,7 +66,7 @@ func (m *merchantService) FindById(id int) (model.Merchant, error) {
 }
 
 func (m *merchantService) Update(payload model.Merchant) error {
-	if payload.Id == 0{
+	if payload.Id == ""{
 		return fmt.Errorf("id is required")
 	}
 	if payload.Name == ""{
