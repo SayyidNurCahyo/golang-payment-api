@@ -57,7 +57,7 @@ func (m *merchantRepository) FindById(id string) (model.Merchant, error) {
 }
 
 func (m *merchantRepository) Save(merchant model.Merchant) error {
-	_, err := m.db.Exec("insert into merchant(name, phone_number, address) values ($1, $2, $3)", merchant.Name, merchant.PhoneNumber, merchant.Address)
+	_, err := m.db.Exec("insert into merchant(id, name, phone_number, address) values ($1, $2, $3, $4)", merchant.Id, merchant.Name, merchant.PhoneNumber, merchant.Address)
 	if err != nil {
 		return err
 	}

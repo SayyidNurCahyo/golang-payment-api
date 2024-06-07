@@ -17,7 +17,6 @@ type DbConfig struct {
 }
 
 type APIConfig struct{
-	ApiHost string
 	ApiPort string
 }
 
@@ -48,7 +47,6 @@ func (c *Config) ReadConfig() error {
 	}
 
 	c.APIConfig = APIConfig{
-		ApiHost: os.Getenv("API_HOST"),
 		ApiPort: os.Getenv("API_PORT"),
 	}
 
@@ -56,7 +54,7 @@ func (c *Config) ReadConfig() error {
 		FilePath: os.Getenv("FILE_PATH"),
 	}
 
-	if c.DbConfig.Host == "" || c.DbConfig.Driver == "" || c.DbConfig.Name == "" || c.DbConfig.Password == "" || c.DbConfig.Port == "" || c.DbConfig.User == "" || c.APIConfig.ApiHost == "" || c.APIConfig.ApiPort == "" || c.FileConfig.FilePath == "" {
+	if c.DbConfig.Host == "" || c.DbConfig.Driver == "" || c.DbConfig.Name == "" || c.DbConfig.Password == "" || c.DbConfig.Port == "" || c.DbConfig.User == "" || c.APIConfig.ApiPort == "" || c.FileConfig.FilePath == "" {
 		return fmt.Errorf("missing required environment variable")
 	}
 

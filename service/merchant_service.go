@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"merchant-payment-api/model"
 	"merchant-payment-api/repository"
+
+	"github.com/google/uuid"
 )
 
 type MerchantService interface {
@@ -29,6 +31,7 @@ func (m *merchantService) Create(payload model.Merchant) error {
 		return fmt.Errorf("address is required")
 	}
 
+	payload.Id = uuid.NewString()
 	err := m.repo.Save(payload)
 	if err!=nil{
 		return fmt.Errorf("failed to create new merchant: %v", err)

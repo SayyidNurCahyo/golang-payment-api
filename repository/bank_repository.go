@@ -57,7 +57,7 @@ func (m *bankRepository) FindById(id string) (model.Bank, error) {
 }
 
 func (m *bankRepository) Save(bank model.Bank) error {
-	_, err := m.db.Exec("insert into bank(name) values ($1)", bank.Name)
+	_, err := m.db.Exec("insert into bank(id, name) values ($1, $2)", bank.Id, bank.Name)
 	if err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func (m *bankRepository) Update(bank model.Bank) error {
 	if errFind != nil {
 		return errFind
 	}
-	_, err := m.db.Exec("update bank set name=$1 where id=$4", bank.Name, bank.Id)
+	_, err := m.db.Exec("update bank set name=$1 where id=$2", bank.Name, bank.Id)
 	if err != nil {
 		return err
 	}
