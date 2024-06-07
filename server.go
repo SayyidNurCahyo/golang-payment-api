@@ -3,13 +3,10 @@ package main
 import (
 	"fmt"
 	"merchant-payment-api/config"
-	"merchant-payment-api/model"
+	"merchant-payment-api/controller/api"
 	"merchant-payment-api/repository"
 	"merchant-payment-api/service"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 type Server struct {
@@ -25,14 +22,9 @@ func (s *Server) Run() {
 	}
 }
 
-func (s *Server) createMerchantHandler(c *gin.Context){
-	var merchant model.Merchant
-	if err := c.ShouldBindJSON(&merchant); err!=nil{
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-	}
-
-	merchant.Id = uuid.NewString()
+// init controller
+func (s *Server) initController(){
+	api.NewMerchantController(s.merchantService, s.engine)
 }
 
 func NewServer() *Server{
@@ -50,11 +42,14 @@ func NewServer() *Server{
 	merchantService := service.NewMerchantService(merchantRepo)
 	productRepo := repository.NewProductRepo(db)
 	productService := service.NewProductService(productRepo, merchantService)
-	engine := gin.Engine{}
 
-	return &Server{
+	engine := gin.Default()
+	server := Server{
 		merchantService: merchantService,
 		productService: productService,
-		engine: &engine,
+		engine: engine,
 	}
+	server.initController()
+
+	return &server
 }
