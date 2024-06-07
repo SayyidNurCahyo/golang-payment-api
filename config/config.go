@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"merchant-payment-api/util"
 	"os"
 )
 
@@ -15,13 +16,28 @@ type DbConfig struct {
 	Driver   string
 }
 
+type APIConfig struct{
+	ApiHost string
+	ApiPort string
+}
+
+type FileConfig struct{
+	FilePath string
+}
+
 // embedded struct dari DbConfig, memisahkan logic dari database config
 type Config struct {
 	DbConfig
+	APIConfig
+	FileConfig
 }
 
 // buat method ReadConfig() punya struct Config = baca informasi konfigurasi dari environment variable
 func (c *Config) ReadConfig() error {
+	err := util.LoadEnv()
+	if err!= nil{
+		return err
+	}
 	c.DbConfig = DbConfig{
 		Host:     os.Getenv("DB_HOST"),
 		Port:     os.Getenv("DB_PORT"),
@@ -31,7 +47,16 @@ func (c *Config) ReadConfig() error {
 		Driver:   os.Getenv("DB_DRIVER"),
 	}
 
-	if c.DbConfig.Host == "" || c.DbConfig.Driver == "" || c.DbConfig.Name == "" || c.DbConfig.Password == "" || c.DbConfig.Port == "" || c.DbConfig.User == "" {
+	c.APIConfig = APIConfig{
+		ApiHost: os.Getenv("API_HOST"),
+		ApiPort: os.Getenv("API_PORT"),
+	}
+
+	c.FileConfig = FileConfig{
+		FilePath: os.Getenv("FILE_PATH"),
+	}
+
+	if c.DbConfig.Host == "" || c.DbConfig.Driver == "" || c.DbConfig.Name == "" || c.DbConfig.Password == "" || c.DbConfig.Port == "" || c.DbConfig.User == "" || c.APIConfig.ApiHost == "" || c.APIConfig.ApiPort == "" || c.FileConfig.FilePath == "" {
 		return fmt.Errorf("missing required environment variable")
 	}
 

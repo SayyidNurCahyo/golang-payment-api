@@ -1,46 +1,113 @@
 package controller
 
 import (
-	"fmt"
-	// "merchant-payment-api/model"
+	"merchant-payment-api/model"
 	"merchant-payment-api/service"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type MerchantController struct {
 	merchantService service.MerchantService
+	router *gin.Engine
 }
 
-// func (m *MerchantController) insertMerchant(){
-// 	err := m.merchantService.Create(model.Merchant{
-// 		Name: "merchant1",
-// 		PhoneNumber: "085708813281",
-// 		Address: "indonesia",
-// 	})
-// 	if err!=nil{
-// 		fmt.Println(err)
-// 		return
-// 	}
-// }
+func (s *MerchantController) createHandler(c *gin.Context){
+	var merchant model.Merchant
+	if err := c.ShouldBindJSON(&merchant); err!=nil{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
 
-func (m *MerchantController) getAllMerchant(){
+	merchant.Id = uuid.NewString()
+	if err := s.merchantService.Create(merchant); err!=nil{
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "successfully update merchant",
+		"data": merchant,
+	})
+}
+
+func (m *MerchantController) getAllHandler(c *gin.Context){
 	merchants, err := m.merchantService.FindAll()
+	if err!=nil{
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "successfully update merchant",
+		"data": merchants,
+	})
+}
+
+func (m *MerchantController) getByIdHandler(c *gin.Context){
+	id := c.Param("id")
+	merchant, err := m.merchantService.FindById(id)
+	if err!=nil{
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "successfully update merchant",
+		"data": merchant,
+	})
+}
+
+func (m *MerchantController) updateHandler(c *gin.Context){
+	var merchant model.Merchant
+	if err := c.ShouldBindJSON(&merchant); err!=nil{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	err := m.merchantService.Update(merchant)
 	if err!= nil{
-		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
 		return
 	}
-	if len(merchants)==0{
-		fmt.Println("data kosong")
+	c.JSON(http.StatusOK, gin.H{
+		"message": "successfully update merchant",
+		"data": merchant,
+	})
+}
+
+func (m *MerchantController) deleteHandler(c *gin.Context){
+	id := c.Param("id")
+	if err := m.merchantService.Delete(id); err!=nil{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
 		return
 	}
-	for _, merchant := range merchants{
-		fmt.Printf("ID: %s, Name: %s, Phone Number: %s, Address: %s", merchant.Id, merchant.Name, merchant.PhoneNumber, merchant.Address)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "successfully delete merchant",
+	})
+}
+
+func NewMerchantController(merchantService service.MerchantService, engine  *gin.Engine){
+	controller := MerchantController{
+		merchantService: merchantService,
+		router: engine,
 	}
-}
-
-func (m *MerchantController) getMerchantById() {
-
-}
-
-func NewMerchantController(merchantService service.MerchantService) *MerchantController {
-	return &MerchantController{merchantService: merchantService}
+	rg := engine.Group("/api/v1")
+	rg.POST("/merchants", controller.createHandler)
+	rg.GET("/merchants", controller.getAllHandler)
+	rg.GET("/merchants/:id", controller.getByIdHandler)
+	rg.PUT("/merchants", controller.updateHandler)
+	rg.DELETE("/merchants/:id", controller.deleteHandler)
 }
