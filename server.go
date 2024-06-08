@@ -18,6 +18,8 @@ type Server struct {
 	paymentService  service.PaymentService
 	customerService service.CustomerService
 	bankService     service.BankService
+	authService     service.AuthService
+	userService     service.UserService
 	engine          *gin.Engine
 	host            string
 	log             *logrus.Logger
@@ -40,6 +42,7 @@ func (s *Server) initMiddleware() {
 func (s *Server) initController() {
 	controller.NewMerchantController(s.merchantService, s.engine)
 	controller.NewPaymentController(s.paymentService, s.engine)
+	controller.NewAuthController(s.userService, s.authService, s.engine)
 }
 
 func NewServer() *Server {
@@ -64,6 +67,9 @@ func NewServer() *Server {
 	bankService := service.NewBankService(bankRepo)
 	paymentRepo := repository.NewPaymentRepository(db)
 	paymentService := service.NewPaymentService(paymentRepo, customerService, merchantService, bankService, productService)
+	userRepo := repository.NewUserRepo(db)
+	authService := service.NewAuthService(userRepo)
+	userService := service.NewUserService(userRepo)
 
 	host := fmt.Sprintf(":%s", cfg.ApiPort)
 	log := logrus.New()
@@ -74,6 +80,8 @@ func NewServer() *Server {
 		bankService:     bankService,
 		customerService: customerService,
 		paymentService:  paymentService,
+		authService:     authService,
+		userService:     userService,
 		engine:          engine,
 		host:            host,
 		log:             log,

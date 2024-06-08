@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 type MerchantController struct {
@@ -14,7 +13,7 @@ type MerchantController struct {
 	router *gin.Engine
 }
 
-func (s *MerchantController) createHandler(c *gin.Context){
+func (m *MerchantController) createHandler(c *gin.Context){
 	var merchant model.Merchant
 	if err := c.ShouldBindJSON(&merchant); err!=nil{
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -23,8 +22,7 @@ func (s *MerchantController) createHandler(c *gin.Context){
 		return
 	}
 
-	merchant.Id = uuid.NewString()
-	if err := s.merchantService.Create(merchant); err!=nil{
+	if err := m.merchantService.Create(merchant); err!=nil{
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
