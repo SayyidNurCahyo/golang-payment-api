@@ -38,7 +38,7 @@ func LogRequestMiddleware(log *logrus.Logger) gin.HandlerFunc {
 		case c.Writer.Status() >= 500:
 			log.Error(requestLog)
 			break
-		case c.Writer.Status() >=400:
+		case c.Writer.Status() >= 400:
 			log.Warn(requestLog)
 			break
 		default:

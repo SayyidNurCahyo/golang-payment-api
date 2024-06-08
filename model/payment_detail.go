@@ -4,6 +4,6 @@ type PaymentDetail struct {
 	Id string
 	Payment
 	Product
-	Price int
+	Price    int
 	Quantity int
 }

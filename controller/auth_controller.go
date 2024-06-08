@@ -11,12 +11,12 @@ import (
 type AuthController struct {
 	userService service.UserService
 	authService service.AuthService
-	router *gin.Engine
+	router      *gin.Engine
 }
 
-func (a *AuthController) loginHandler(c *gin.Context){
+func (a *AuthController) loginHandler(c *gin.Context) {
 	var auth dto.LoginRequest
-	if err := c.ShouldBindJSON(&auth); err!=nil{
+	if err := c.ShouldBindJSON(&auth); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
@@ -24,7 +24,7 @@ func (a *AuthController) loginHandler(c *gin.Context){
 	}
 
 	response, err := a.authService.Login(auth)
-	if err!=nil{
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
@@ -33,13 +33,13 @@ func (a *AuthController) loginHandler(c *gin.Context){
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "successfully login",
-		"data": response,
+		"data":    response,
 	})
 }
 
-func (a *AuthController) registerBankHandler(c *gin.Context){
+func (a *AuthController) registerBankHandler(c *gin.Context) {
 	var auth dto.SaveBankRequest
-	if err := c.ShouldBindJSON(&auth); err!=nil{
+	if err := c.ShouldBindJSON(&auth); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
@@ -47,7 +47,7 @@ func (a *AuthController) registerBankHandler(c *gin.Context){
 	}
 
 	err := a.userService.RegisterBank(auth)
-	if err!=nil{
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
@@ -59,9 +59,9 @@ func (a *AuthController) registerBankHandler(c *gin.Context){
 	})
 }
 
-func (a *AuthController) registerCustomerHandler(c *gin.Context){
+func (a *AuthController) registerCustomerHandler(c *gin.Context) {
 	var auth dto.SaveCustomerRequest
-	if err := c.ShouldBindJSON(&auth); err!=nil{
+	if err := c.ShouldBindJSON(&auth); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
@@ -69,7 +69,7 @@ func (a *AuthController) registerCustomerHandler(c *gin.Context){
 	}
 
 	err := a.userService.RegisterCustomer(auth)
-	if err!=nil{
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
@@ -81,9 +81,9 @@ func (a *AuthController) registerCustomerHandler(c *gin.Context){
 	})
 }
 
-func (a *AuthController) registerMerchantHandler(c *gin.Context){
+func (a *AuthController) registerMerchantHandler(c *gin.Context) {
 	var auth dto.SaveMerchantRequest
-	if err := c.ShouldBindJSON(&auth); err!=nil{
+	if err := c.ShouldBindJSON(&auth); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
@@ -91,7 +91,7 @@ func (a *AuthController) registerMerchantHandler(c *gin.Context){
 	}
 
 	err := a.userService.RegisterMerchant(auth)
-	if err!=nil{
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
@@ -103,11 +103,11 @@ func (a *AuthController) registerMerchantHandler(c *gin.Context){
 	})
 }
 
-func NewAuthController(userService service.UserService, authService service.AuthService, engine  *gin.Engine){
+func NewAuthController(userService service.UserService, authService service.AuthService, engine *gin.Engine) {
 	controller := AuthController{
 		userService: userService,
 		authService: authService,
-		router: engine,
+		router:      engine,
 	}
 	rg := engine.Group("/api/v1")
 	rg.POST("/auth/login", controller.loginHandler)

@@ -11,12 +11,12 @@ import (
 
 type MerchantController struct {
 	merchantService service.MerchantService
-	router *gin.Engine
+	router          *gin.Engine
 }
 
-func (m *MerchantController) getAllHandler(c *gin.Context){
+func (m *MerchantController) getAllHandler(c *gin.Context) {
 	merchants, err := m.merchantService.FindAll()
-	if err!=nil{
+	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"message": err.Error(),
 		})
@@ -24,14 +24,14 @@ func (m *MerchantController) getAllHandler(c *gin.Context){
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "successfully get all merchant",
-		"data": merchants,
+		"data":    merchants,
 	})
 }
 
-func (m *MerchantController) getByIdHandler(c *gin.Context){
+func (m *MerchantController) getByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 	merchant, err := m.merchantService.FindById(id)
-	if err!=nil{
+	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"message": err.Error(),
 		})
@@ -39,20 +39,20 @@ func (m *MerchantController) getByIdHandler(c *gin.Context){
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "successfully get merchant",
-		"data": merchant,
+		"data":    merchant,
 	})
 }
 
-func (m *MerchantController) updateHandler(c *gin.Context){
+func (m *MerchantController) updateHandler(c *gin.Context) {
 	var merchant dto.UpdateMerchantRequest
-	if err := c.ShouldBindJSON(&merchant); err!=nil{
+	if err := c.ShouldBindJSON(&merchant); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
 	err := m.merchantService.Update(merchant)
-	if err!= nil{
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
@@ -60,13 +60,13 @@ func (m *MerchantController) updateHandler(c *gin.Context){
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "successfully update merchant",
-		"data": merchant,
+		"data":    merchant,
 	})
 }
 
-func (m *MerchantController) deleteHandler(c *gin.Context){
+func (m *MerchantController) deleteHandler(c *gin.Context) {
 	id := c.Param("id")
-	if err := m.merchantService.Delete(id); err!=nil{
+	if err := m.merchantService.Delete(id); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
@@ -77,10 +77,10 @@ func (m *MerchantController) deleteHandler(c *gin.Context){
 	})
 }
 
-func NewMerchantController(merchantService service.MerchantService, engine  *gin.Engine){
+func NewMerchantController(merchantService service.MerchantService, engine *gin.Engine) {
 	controller := MerchantController{
 		merchantService: merchantService,
-		router: engine,
+		router:          engine,
 	}
 	rg := engine.Group("/api/v1", middleware.AuthMiddleware())
 	rg.GET("/merchants", controller.getAllHandler)

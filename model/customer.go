@@ -1,8 +1,8 @@
 package model
 
-type Customer struct{
-	Id string
-	Name string
+type Customer struct {
+	Id          string
+	Name        string
 	PhoneNumber string
 	UserCredential
 }

@@ -7,7 +7,7 @@ import (
 
 type MerchantRepository interface {
 	Save(merchant model.Merchant) error
-	FindById(id string) (model.Merchant, error) 
+	FindById(id string) (model.Merchant, error)
 	FindAll() ([]model.Merchant, error)
 	Update(merchant model.Merchant) error
 	DeleteById(id string) error
@@ -58,7 +58,7 @@ func (m *merchantRepository) FindById(id string) (model.Merchant, error) {
 	}
 	merchant.UserCredential = user
 	return merchant, nil
-} 
+}
 
 func (m *merchantRepository) Save(merchant model.Merchant) error {
 	_, err := m.db.Exec("insert into merchant(id, name, phone_number, address, user_id) values ($1, $2, $3, $4, $5)", merchant.Id, merchant.Name, merchant.PhoneNumber, merchant.Address, merchant.UserCredential.Id)

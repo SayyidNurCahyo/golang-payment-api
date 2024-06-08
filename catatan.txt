@@ -10,3 +10,12 @@ go get github.com/lib/pq =
 
 struct = tipe data yang dibuat untuk mengelompokkan variabel terkait di bawah satu nama (sama seperti class)
 method struct dibuat dengan func (alias *NamaStruct) NamaMethod() returnType {} , kalo returnType ga diberi berarti void
+
+go get github.com/golang-jwt/jwt/v5 =
+    download dan install jwt untuk golang
+
+go get github.com/lib/pq =
+    download dan install package driver buat koneksi ke postgresql
+
+go get github.com/google/uuid = 
+    download dan install untuk random uuid sebagai primary key data

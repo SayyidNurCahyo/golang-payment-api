@@ -8,14 +8,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type authHeader struct{
+type authHeader struct {
 	AuthorizationHeader string `header:"Authorization"`
 }
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var authHeader authHeader
-		if err := c.ShouldBindHeader(&authHeader); err!=nil{
+		if err := c.ShouldBindHeader(&authHeader); err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"message": "unauthorizaed",
 			})
@@ -24,7 +24,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		// catch token in header
 		token := strings.Replace(authHeader.AuthorizationHeader, "Bearer ", "", 1)
-		if token == ""{
+		if token == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"message": "unauthorizaed",
 			})
@@ -33,14 +33,14 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		// verifikasi token
 		claims, err := security.VerifyToken(token)
-		if err!=nil{
+		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"message": "unauthorizaed",
 			})
 			return
 		}
 		c.Set("claims", claims)
-		
+
 		c.Next()
 	}
 }

@@ -18,73 +18,73 @@ type customerService struct {
 	customerRepo repository.CustomerRepository
 }
 
-func (b *customerService) Delete(id string) error {
-	customer, err := b.customerRepo.FindById(id)
-	if err!=nil{
+func (c *customerService) Delete(id string) error {
+	customer, err := c.customerRepo.FindById(id)
+	if err != nil {
 		return fmt.Errorf("customer not found")
 	}
 
-	err = b.customerRepo.DeleteById(customer.Id)
-	if err!=nil{
+	err = c.customerRepo.DeleteById(customer.Id)
+	if err != nil {
 		return fmt.Errorf("failed to delete customer: %v", err)
 	}
 	return nil
 }
 
-func (b *customerService) FindAll() ([]dto.GetCustomerResponse, error) {
-	customers, err := b.customerRepo.FindAll()
-	if err!= nil{
+func (c *customerService) FindAll() ([]dto.GetCustomerResponse, error) {
+	customers, err := c.customerRepo.FindAll()
+	if err != nil {
 		return nil, fmt.Errorf("failed to get all customer: %v", err)
 	}
 	responses := make([]dto.GetCustomerResponse, 0, len(customers))
 	for _, customer := range customers {
 		response := dto.GetCustomerResponse{
-			Id: customer.Id,
-			Name: customer.Name,
+			Id:          customer.Id,
+			Name:        customer.Name,
 			PhoneNumber: customer.PhoneNumber,
-			Username: customer.UserCredential.Username,
+			Username:    customer.UserCredential.Username,
 		}
 		responses = append(responses, response)
 	}
 	return responses, nil
 }
 
-func (b *customerService) FindById(id string) (dto.GetCustomerResponse, error) {
-	customer, err := b.customerRepo.FindById(id)
-	if err!=nil{
+func (c *customerService) FindById(id string) (dto.GetCustomerResponse, error) {
+	customer, err := c.customerRepo.FindById(id)
+	if err != nil {
 		return dto.GetCustomerResponse{}, fmt.Errorf("customer not found")
 	}
 	return dto.GetCustomerResponse{
-		Id: customer.Id,
-		Name: customer.Name,
+		Id:          customer.Id,
+		Name:        customer.Name,
 		PhoneNumber: customer.PhoneNumber,
-		Username: customer.UserCredential.Username,
+		Username:    customer.UserCredential.Username,
 	}, nil
 }
 
-func (b *customerService) Update(payload dto.UpdateCustomerRequest) error {
-	if payload.Id == ""{
+func (c *customerService) Update(payload dto.UpdateCustomerRequest) error {
+	if payload.Id == "" {
 		return fmt.Errorf("id is required")
 	}
-	if payload.Name == ""{
+	if payload.Name == "" {
 		return fmt.Errorf("name is required")
 	}
-	if payload.PhoneNumber == ""{
+	if payload.PhoneNumber == "" {
 		return fmt.Errorf("phone number is required")
 	}
 
-	currentCustomer, err := b.customerRepo.FindById(payload.Id)
-	if err!= nil{
+	currentCustomer, err := c.customerRepo.FindById(payload.Id)
+	if err != nil {
 		return err
 	}
 
 	customer := model.Customer{
-		Id: currentCustomer.Id,
-		Name: payload.Name,
+		Id:          currentCustomer.Id,
+		Name:        payload.Name,
 		PhoneNumber: payload.PhoneNumber,
 	}
-	err = b.customerRepo.Update(customer)
-	if err!=nil{
+	err = c.customerRepo.Update(customer)
+	if err != nil {
 		return fmt.Errorf("failed to update customer: %v", err)
 	}
 	return nil

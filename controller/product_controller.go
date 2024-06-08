@@ -11,12 +11,12 @@ import (
 
 type ProductController struct {
 	productService service.ProductService
-	router *gin.Engine
+	router         *gin.Engine
 }
 
-func (p *ProductController) getAllHandler(c *gin.Context){
+func (p *ProductController) getAllHandler(c *gin.Context) {
 	products, err := p.productService.FindAll()
-	if err!=nil{
+	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"message": err.Error(),
 		})
@@ -24,14 +24,14 @@ func (p *ProductController) getAllHandler(c *gin.Context){
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "successfully get all product",
-		"data": products,
+		"data":    products,
 	})
 }
 
-func (p *ProductController) getByNameHandler(c *gin.Context){
+func (p *ProductController) getByNameHandler(c *gin.Context) {
 	name := c.Param("name")
 	products, err := p.productService.FindByName(name)
-	if err!=nil{
+	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"message": err.Error(),
 		})
@@ -39,14 +39,14 @@ func (p *ProductController) getByNameHandler(c *gin.Context){
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "successfully get product",
-		"data": products,
+		"data":    products,
 	})
 }
 
-func (p *ProductController) getByIdHandler(c *gin.Context){
+func (p *ProductController) getByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 	product, err := p.productService.FindById(id)
-	if err!=nil{
+	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"message": err.Error(),
 		})
@@ -54,20 +54,20 @@ func (p *ProductController) getByIdHandler(c *gin.Context){
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "successfully get product",
-		"data": product,
+		"data":    product,
 	})
 }
 
-func (p *ProductController) updateHandler(c *gin.Context){
+func (p *ProductController) updateHandler(c *gin.Context) {
 	var product dto.UpdateProductRequest
-	if err := c.ShouldBindJSON(&product); err!=nil{
+	if err := c.ShouldBindJSON(&product); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
 	err := p.productService.Update(product)
-	if err!= nil{
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
@@ -75,13 +75,13 @@ func (p *ProductController) updateHandler(c *gin.Context){
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "successfully update product",
-		"data": product,
+		"data":    product,
 	})
 }
 
-func (p *ProductController) deleteHandler(c *gin.Context){
+func (p *ProductController) deleteHandler(c *gin.Context) {
 	id := c.Param("id")
-	if err := p.productService.Delete(id); err!=nil{
+	if err := p.productService.Delete(id); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
@@ -92,9 +92,9 @@ func (p *ProductController) deleteHandler(c *gin.Context){
 	})
 }
 
-func (p *ProductController) createHandler(c *gin.Context){
+func (p *ProductController) createHandler(c *gin.Context) {
 	var request dto.SaveProductRequest
-	if err := c.ShouldBindJSON(&request); err!=nil{
+	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
@@ -102,7 +102,7 @@ func (p *ProductController) createHandler(c *gin.Context){
 	}
 
 	err := p.productService.Create(request)
-	if err!=nil{
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
@@ -114,10 +114,10 @@ func (p *ProductController) createHandler(c *gin.Context){
 	})
 }
 
-func NewProductController(productService service.ProductService, engine  *gin.Engine){
+func NewProductController(productService service.ProductService, engine *gin.Engine) {
 	controller := ProductController{
 		productService: productService,
-		router: engine,
+		router:         engine,
 	}
 	rg := engine.Group("/api/v1", middleware.AuthMiddleware())
 	rg.POST("/products", controller.createHandler)

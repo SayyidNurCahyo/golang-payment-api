@@ -32,11 +32,11 @@ func (p *productService) FindByName(name string) ([]dto.GetProductResponse, erro
 	responses := make([]dto.GetProductResponse, 0, len(products))
 	for _, product := range products {
 		response := dto.GetProductResponse{
-			Id: product.Id,
-			MerchantId: product.Merchant.Id,
+			Id:           product.Id,
+			MerchantId:   product.Merchant.Id,
 			MerchantName: product.Merchant.Name,
-			Name: product.Name,
-			Price: product.Price,
+			Name:         product.Name,
+			Price:        product.Price,
 		}
 		responses = append(responses, response)
 	}
@@ -61,10 +61,10 @@ func (p *productService) Create(payload dto.SaveProductRequest) error {
 	}
 
 	product := model.Product{
-		Id: uuid.NewString(),
-		Merchant: model.Merchant{Id: payload.MerchantId},
-		Name: payload.Name,
-		Price: payload.Price,
+		Id:          uuid.NewString(),
+		Merchant:    model.Merchant{Id: payload.MerchantId},
+		Name:        payload.Name,
+		Price:       payload.Price,
 		IsAvailable: true,
 	}
 	err = p.repo.Save(product)
@@ -97,11 +97,11 @@ func (p *productService) FindAll() ([]dto.GetProductResponse, error) {
 	responses := make([]dto.GetProductResponse, 0, len(products))
 	for _, product := range products {
 		response := dto.GetProductResponse{
-			Id: product.Id,
-			MerchantId: product.Merchant.Id,
+			Id:           product.Id,
+			MerchantId:   product.Merchant.Id,
 			MerchantName: product.Merchant.Name,
-			Name: product.Name,
-			Price: product.Price,
+			Name:         product.Name,
+			Price:        product.Price,
 		}
 		responses = append(responses, response)
 	}
@@ -115,11 +115,11 @@ func (p *productService) FindById(id string) (dto.GetProductResponse, error) {
 		return dto.GetProductResponse{}, fmt.Errorf("product not found")
 	}
 	return dto.GetProductResponse{
-		Id: product.Id,
-		MerchantId: product.Merchant.Id,
+		Id:           product.Id,
+		MerchantId:   product.Merchant.Id,
 		MerchantName: product.Merchant.Name,
-		Name: product.Name,
-		Price: product.Price,
+		Name:         product.Name,
+		Price:        product.Price,
 	}, nil
 }
 
@@ -141,10 +141,10 @@ func (p *productService) Update(payload dto.UpdateProductRequest) error {
 	}
 
 	product := model.Product{
-		Id: currentProduct.Id,
-		Merchant: currentProduct.Merchant,
-		Name: payload.Name,
-		Price: payload.Price,
+		Id:          currentProduct.Id,
+		Merchant:    currentProduct.Merchant,
+		Name:        payload.Name,
+		Price:       payload.Price,
 		IsAvailable: currentProduct.IsAvailable,
 	}
 	err = p.repo.Update(product)

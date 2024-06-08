@@ -8,7 +8,7 @@ import (
 
 func LoadEnv() error {
 	err := godotenv.Load()
-	if err!=nil{
+	if err != nil {
 		return fmt.Errorf("error load environment file")
 	}
 	return nil

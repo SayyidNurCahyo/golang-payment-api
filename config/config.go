@@ -66,14 +66,14 @@ func (c *Config) ReadConfig() error {
 	}
 
 	expiration, err := strconv.Atoi(os.Getenv("APP_EXPIRATION_TOKEN"))
-	if err!=nil{
+	if err != nil {
 		return err
 	}
 	c.TokenConfig = TokenConfig{
-		ApplicationName: os.Getenv("APP_TOKEN_NAME"),
-		JWTSignatureKey: []byte(os.Getenv("APP_TOKEN_KEY")),
+		ApplicationName:  os.Getenv("APP_TOKEN_NAME"),
+		JWTSignatureKey:  []byte(os.Getenv("APP_TOKEN_KEY")),
 		JWTSigningMethod: jwt.SigningMethodHS256,
-		ExpirationToken: expiration,
+		ExpirationToken:  expiration,
 	}
 
 	if c.DbConfig.Host == "" || c.DbConfig.Driver == "" || c.DbConfig.Name == "" || c.DbConfig.Password == "" || c.DbConfig.Port == "" || c.DbConfig.User == "" || c.APIConfig.ApiPort == "" || c.FileConfig.FilePath == "" || c.TokenConfig.ApplicationName == "" || c.TokenConfig.ExpirationToken == 0 {

@@ -7,7 +7,7 @@ import (
 
 type BankRepository interface {
 	Save(bank model.Bank) error
-	FindById(id string) (model.Bank, error) 
+	FindById(id string) (model.Bank, error)
 	FindAll() ([]model.Bank, error)
 	Update(bank model.Bank) error
 	DeleteById(id string) error

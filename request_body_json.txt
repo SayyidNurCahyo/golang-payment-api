@@ -1,0 +1,81 @@
+register bank =
+{
+    "name": "mandiri",
+    "username": "mandiri",
+    "password": "password"
+}
+
+login =
+{
+    "username": "mandiri",
+    "password": "password"
+}
+
+update bank =
+{
+    "id": "484a99fb-fdb9-41b5-9f29-1673b4fbe5bb",
+    "name": "bri"
+}
+
+register customer =
+{
+    "name": "cahyo",
+    "phoneNumber": "085708813281",
+    "username": "cahyo123",
+    "password": "password"
+}
+
+update customer =
+{
+    "id": "21c41a50-f302-4df4-9a3b-4da4aa5c44d1",
+    "name": "cahyo update",
+    "phoneNumber": "08570881328100"
+}
+
+register merchant =
+{
+    "name": "cahyo store",
+    "phoneNumber": "085708813281",
+    "address": "kediri",
+    "username": "store",
+    "password": "password"
+}
+
+update merchant =
+{
+    "id": "9fd5eef8-9e4e-4445-8473-d2201088c702",
+    "name": "cahyo store edited",
+    "phoneNumber": "085708813281",
+    "address": "malang"
+}
+
+create product =
+{
+  "merchantId": "9fd5eef8-9e4e-4445-8473-d2201088c702",
+  "name": "kopi",
+  "price": 4000
+}
+
+update product =
+{
+  "id": "9011f401-553a-4a56-92dc-c1709390cc3b",
+  "name": "teh",
+  "price": 3000
+}
+
+create payment =
+{
+    "customerId": "21c41a50-f302-4df4-9a3b-4da4aa5c44d1",
+    "merchantId": "9fd5eef8-9e4e-4445-8473-d2201088c702",
+    "bankId": "484a99fb-fdb9-41b5-9f29-1673b4fbe5bb",
+    "details": [
+        {
+            "productId": "9011f401-553a-4a56-92dc-c1709390cc3b",
+            "quantity": 10
+        },
+        {
+            "productId": "acd0b8e4-288a-48e6-972f-8ad2037a7c06",
+            "quantity": 8
+        }
+    ]
+}

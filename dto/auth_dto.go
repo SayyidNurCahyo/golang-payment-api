@@ -5,7 +5,7 @@ type LoginResponse struct {
 	Token    string
 }
 
-type LoginRequest struct{
+type LoginRequest struct {
 	Username string
 	Password string
 }

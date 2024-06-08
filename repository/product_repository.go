@@ -62,7 +62,7 @@ func (p *productRepository) FindById(id string) (model.Product, error) {
 }
 
 func (p *productRepository) FindByName(name string) ([]model.Product, error) {
-	name = "%"+name+"%"
+	name = "%" + name + "%"
 	rows, err := p.db.Query("select p.id, m.id, m.name, p.name, p.price from product as p join merchant as m on m.id = p.merchant_id where p.is_available=true and p.name ilike $1", name)
 	if err != nil {
 		return nil, err
@@ -83,7 +83,7 @@ func (p *productRepository) FindByName(name string) ([]model.Product, error) {
 
 func (p *productRepository) Save(product model.Product) error {
 	_, err := p.db.Exec("insert into product(id, merchant_id, name, price, is_available) values ($1, $2, $3, $4, $5)", product.Id, product.Merchant.Id, product.Name, product.Price, true)
-	if err!=nil{
+	if err != nil {
 		return err
 	}
 	return nil
@@ -91,11 +91,11 @@ func (p *productRepository) Save(product model.Product) error {
 
 func (p *productRepository) Update(product model.Product) error {
 	_, errFind := p.FindById(product.Id)
-	if errFind!=nil{
+	if errFind != nil {
 		return errFind
 	}
 	_, err := p.db.Exec("update product set name=$1, price=$2 where id=$3", product.Name, product.Price, product.Id)
-	if err!=nil{
+	if err != nil {
 		return err
 	}
 	return nil

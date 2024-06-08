@@ -13,7 +13,7 @@ type DbConnection interface {
 
 // dbConnection diawali huruf kecil karena dipake di file ini saja
 type dbConnection struct {
-	db *sql.DB
+	db  *sql.DB
 	cfg *Config
 }
 
@@ -39,12 +39,12 @@ func (d *dbConnection) Conn() *sql.DB {
 }
 
 // constructor
-func NewDbConnection(cfg *Config) (DbConnection, error){
+func NewDbConnection(cfg *Config) (DbConnection, error) {
 	conn := &dbConnection{
-		cfg : cfg,
+		cfg: cfg,
 	}
 	err := conn.initDb()
-	if err!= nil{
+	if err != nil {
 		return nil, err
 	}
 	return conn, nil
