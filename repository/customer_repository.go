@@ -58,7 +58,7 @@ func (c *customerRepository) FindById(id string) (model.Customer, error) {
 	}
 	customer.UserCredential = user
 	return customer, nil
-}
+} 
 
 func (c *customerRepository) Save(customer model.Customer) error {
 	_, err := c.db.Exec("insert into customer(id, name, phone_number, user_id) values ($1, $2, $3, $4)", customer.Id, customer.Name, customer.PhoneNumber, customer.UserCredential.Id)

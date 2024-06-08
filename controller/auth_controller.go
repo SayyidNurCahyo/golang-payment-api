@@ -81,6 +81,28 @@ func (a *AuthController) registerCustomerHandler(c *gin.Context){
 	})
 }
 
+func (a *AuthController) registerMerchantHandler(c *gin.Context){
+	var auth dto.SaveMerchantRequest
+	if err := c.ShouldBindJSON(&auth); err!=nil{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	err := a.userService.RegisterMerchant(auth)
+	if err!=nil{
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "successfully register new merchant",
+	})
+}
+
 func NewAuthController(userService service.UserService, authService service.AuthService, engine  *gin.Engine){
 	controller := AuthController{
 		userService: userService,
@@ -91,4 +113,5 @@ func NewAuthController(userService service.UserService, authService service.Auth
 	rg.POST("/auth/login", controller.loginHandler)
 	rg.POST("/auth/register/bank", controller.registerBankHandler)
 	rg.POST("/auth/register/customer", controller.registerCustomerHandler)
+	rg.POST("/auth/register/merchant", controller.registerMerchantHandler)
 }

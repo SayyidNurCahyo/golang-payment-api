@@ -31,11 +31,11 @@ func (p *paymentService) CreatePayment(payload model.Payment) (model.Payment, er
 	// 	return model.Payment{}, fmt.Errorf("customer not found")
 	// }
 	// payment.Customer = customer
-	merchant, err := p.merchantService.FindById(payload.Merchant.Id)
-	if err != nil {
-		return model.Payment{}, fmt.Errorf("merchant not found")
-	}
-	payment.Merchant = merchant
+	// merchant, err := p.merchantService.FindById(payload.Merchant.Id)
+	// if err != nil {
+	// 	return model.Payment{}, fmt.Errorf("merchant not found")
+	// }
+	// payment.Merchant = merchant
 	// bank, err := p.bankService.FindById(payload.Bank.Id)
 	// if err != nil {
 	// 	return model.Payment{}, fmt.Errorf("bank not found")
@@ -55,10 +55,10 @@ func (p *paymentService) CreatePayment(payload model.Payment) (model.Payment, er
 	}
 	payment.Details = paymentDetails
 
-	err = p.paymentRepo.CreatePayment(payment)
-	if err!=nil{
-		return model.Payment{}, fmt.Errorf("failed to create payment")
-	}
+	// err = p.paymentRepo.CreatePayment(payment)
+	// if err!=nil{
+	// 	return model.Payment{}, fmt.Errorf("failed to create payment")
+	// }
 	return payload, nil
 }
 

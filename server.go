@@ -71,7 +71,7 @@ func NewServer() *Server {
 	paymentService := service.NewPaymentService(paymentRepo, customerService, merchantService, bankService, productService)
 	userRepo := repository.NewUserRepo(db)
 	authService := service.NewAuthService(userRepo)
-	userService := service.NewUserService(userRepo, bankRepo, customerRepo)
+	userService := service.NewUserService(userRepo, bankRepo, customerRepo, merchantRepo)
 
 	host := fmt.Sprintf(":%s", cfg.ApiPort)
 	log := logrus.New()
