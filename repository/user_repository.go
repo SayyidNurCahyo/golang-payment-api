@@ -16,7 +16,7 @@ type userRepository struct {
 
 // FindByUsername implements UserRepository.
 func (u *userRepository) FindByUsername(username string) (model.UserCredential, error) {
-	row := u.db.QueryRow("select id, username from user_credential where username=$1", username)
+	row := u.db.QueryRow("select id, username from user_credential where username=$1 and is_active=$2", username, true)
 	var userCredential model.UserCredential
 	err := row.Scan(&userCredential.Id, &userCredential.Username)
 	if err!=nil{

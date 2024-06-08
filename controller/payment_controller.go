@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"merchant-payment-api/middleware"
 	"merchant-payment-api/model"
 	"merchant-payment-api/service"
 	"net/http"
@@ -69,7 +70,7 @@ func NewPaymentController(paymentService service.PaymentService, engine  *gin.En
 		paymentService: paymentService,
 		router: engine,
 	}
-	rg := engine.Group("/api/v1")
+	rg := engine.Group("/api/v1", middleware.AuthMiddleware())
 	rg.POST("/payments", controller.createHandler)
 	// rg.GET("/payments", controller.getAllHandler)
 	// rg.GET("/payments/:id", controller.getByIdHandler)

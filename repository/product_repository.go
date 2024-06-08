@@ -8,7 +8,7 @@ import (
 type ProductRepository interface {
 	Save(product model.Product) error
 	FindById(id string) (model.Product, error)
-	FindByMerchantId(merchantId string) ([]model.Product, error)
+	// FindByMerchantId(merchantId string) ([]model.Product, error)
 	FindByName(name string) (model.Product, error)
 	FindAll() ([]model.Product, error)
 	Update(product model.Product) error
@@ -70,16 +70,16 @@ func (p *productRepository) FindByName(name string) (model.Product, error) {
 	return product, nil
 }
 
-func (p *productRepository) FindByMerchantId(merchantId string) ([]model.Product, error) {
-	row := p.db.QueryRow("select p.* from product as p join merchant as m on m.id=p.merchant_id where p.name ilike '%$1%'", name)
-	var product model.Product
-	// & buat menimpa data di product (di set)
-	err := row.Scan(&product.Id, &product.Merchant.Id, &product.Name, &product.Price)
-	if err!= nil{
-		return model.Product{}, err
-	}
-	return product, nil
-}
+// func (p *productRepository) FindByMerchantId(merchantId string) ([]model.Product, error) {
+// 	row := p.db.QueryRow("select p.* from product as p join merchant as m on m.id=p.merchant_id where p.name ilike '%$1%'", name)
+// 	var product model.Product
+// 	// & buat menimpa data di product (di set)
+// 	err := row.Scan(&product.Id, &product.Merchant.Id, &product.Name, &product.Price)
+// 	if err!= nil{
+// 		return model.Product{}, err
+// 	}
+// 	return product, nil
+// }
 
 func (p *productRepository) Save(product model.Product) error {
 	_, err := p.db.Exec("insert into product(id, merchant_id, name, price) values ($1, $2, $3, $4)", product.Id, product.Merchant.Id, product.Name, product.Price)
