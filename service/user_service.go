@@ -13,11 +13,62 @@ import (
 type UserService interface {
 	FindByUsername(username string) (model.UserCredential, error)
 	RegisterBank(payload dto.SaveBankRequest) error
+	RegisterCustomer(payload dto.SaveCustomerRequest) error
 }
 
 type userService struct {
-	userRepo repository.UserRepository
-	bankRepo repository.BankRepository
+	userRepo     repository.UserRepository
+	bankRepo     repository.BankRepository
+	customerRepo repository.CustomerRepository
+}
+
+// RegisterCustomer implements UserService.
+func (u *userService) RegisterCustomer(payload dto.SaveCustomerRequest) error {
+	if payload.Name == "" {
+		return fmt.Errorf("customer name is required")
+	}
+	if payload.PhoneNumber == "" {
+		return fmt.Errorf("customer phone number is required")
+	}
+	if payload.Username == "" {
+		return fmt.Errorf("customer account username is required")
+	}
+	if payload.Password == "" {
+		return fmt.Errorf("customer account password is required")
+	}
+
+	checkUser, _ := u.FindByUsername(payload.Username)
+	if checkUser.Id != "" {
+		return fmt.Errorf("username already used")
+	}
+
+	hashPassword, err := security.HashPassword(payload.Password)
+	if err != nil {
+		return err
+	}
+
+	user := model.UserCredential{
+		Id:       uuid.NewString(),
+		Username: payload.Username,
+		Password: hashPassword,
+		IsActive: true,
+	}
+	err = u.userRepo.Save(user)
+	if err != nil {
+		return fmt.Errorf("failed to register user: %v", err.Error())
+	}
+
+	customer := model.Customer{
+		Id:             uuid.NewString(),
+		Name:           payload.Name,
+		PhoneNumber: 	payload.PhoneNumber,
+		UserCredential: user,
+	}
+	err = u.customerRepo.Save(customer)
+	if err != nil {
+		return fmt.Errorf("failed to register customer: %v", err.Error())
+	}
+	return nil
 }
 
 // RegisterBank implements UserService.
@@ -70,9 +121,10 @@ func (u *userService) FindByUsername(username string) (model.UserCredential, err
 	return u.userRepo.FindByUsername(username)
 }
 
-func NewUserService(userRepo repository.UserRepository, bankRepo repository.BankRepository) UserService {
+func NewUserService(userRepo repository.UserRepository, bankRepo repository.BankRepository, customerRepo repository.CustomerRepository) UserService {
 	return &userService{
-		userRepo: userRepo,
-		bankRepo: bankRepo,
+		userRepo:     userRepo,
+		bankRepo:     bankRepo,
+		customerRepo: customerRepo,
 	}
 }

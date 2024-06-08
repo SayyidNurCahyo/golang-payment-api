@@ -55,7 +55,29 @@ func (a *AuthController) registerBankHandler(c *gin.Context){
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "successfully register",
+		"message": "successfully register new bank",
+	})
+}
+
+func (a *AuthController) registerCustomerHandler(c *gin.Context){
+	var auth dto.SaveCustomerRequest
+	if err := c.ShouldBindJSON(&auth); err!=nil{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	err := a.userService.RegisterCustomer(auth)
+	if err!=nil{
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "successfully register new customer",
 	})
 }
 
@@ -67,5 +89,6 @@ func NewAuthController(userService service.UserService, authService service.Auth
 	}
 	rg := engine.Group("/api/v1")
 	rg.POST("/auth/login", controller.loginHandler)
-	rg.POST("/auth/registerBank", controller.registerBankHandler)
+	rg.POST("/auth/register/bank", controller.registerBankHandler)
+	rg.POST("/auth/register/customer", controller.registerCustomerHandler)
 }

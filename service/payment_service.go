@@ -26,11 +26,11 @@ func (p *paymentService) CreatePayment(payload model.Payment) (model.Payment, er
 	var payment model.Payment
 	payment.Id = uuid.NewString()
 	payment.PaymentDate = time.Now()
-	customer, err := p.customerService.FindById(payload.Customer.Id)
-	if err != nil {
-		return model.Payment{}, fmt.Errorf("customer not found")
-	}
-	payment.Customer = customer
+	// customer, err := p.customerService.FindById(payload.Customer.Id)
+	// if err != nil {
+	// 	return model.Payment{}, fmt.Errorf("customer not found")
+	// }
+	// payment.Customer = customer
 	merchant, err := p.merchantService.FindById(payload.Merchant.Id)
 	if err != nil {
 		return model.Payment{}, fmt.Errorf("merchant not found")
