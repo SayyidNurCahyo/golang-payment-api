@@ -3,6 +3,7 @@ package model
 type Product struct {
 	Id string
 	Merchant
-	Name  string
-	Price int
+	Name        string
+	Price       int
+	IsAvailable bool
 }

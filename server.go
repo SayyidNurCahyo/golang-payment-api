@@ -45,6 +45,7 @@ func (s *Server) initController() {
 	controller.NewAuthController(s.userService, s.authService, s.engine)
 	controller.NewBankController(s.bankService, s.engine)
 	controller.NewCustomerController(s.customerService, s.engine)
+	controller.NewProductController(s.productService, s.engine)
 }
 
 func NewServer() *Server {

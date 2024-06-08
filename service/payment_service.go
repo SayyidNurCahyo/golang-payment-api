@@ -49,7 +49,7 @@ func (p *paymentService) CreatePayment(payload model.Payment) (model.Payment, er
 		}
 		detail.Id = uuid.NewString()
 		detail.Payment = payment
-		detail.Product = product
+		// detail.Product = product
 		detail.Price = product.Price
 		paymentDetails = append(paymentDetails, detail)
 	}
