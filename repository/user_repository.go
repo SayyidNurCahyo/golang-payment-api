@@ -16,10 +16,10 @@ type userRepository struct {
 
 // FindByUsername implements UserRepository.
 func (u *userRepository) FindByUsername(username string) (model.UserCredential, error) {
-	row := u.db.QueryRow("select id, username from user_credential where username=$1 and is_active=$2", username, true)
+	row := u.db.QueryRow("select id, username, password from user_credential where username=$1 and is_active=$2", username, true)
 	var userCredential model.UserCredential
-	err := row.Scan(&userCredential.Id, &userCredential.Username)
-	if err!=nil{
+	err := row.Scan(&userCredential.Id, &userCredential.Username, &userCredential.Password)
+	if err != nil {
 		return model.UserCredential{}, err
 	}
 	return userCredential, nil
@@ -28,7 +28,7 @@ func (u *userRepository) FindByUsername(username string) (model.UserCredential, 
 // Save implements UserRepository.
 func (u *userRepository) Save(payload model.UserCredential) error {
 	_, err := u.db.Exec("insert into user_credential(id, username, password, is_active) values ($1, $2, $3, $4)", payload.Id, payload.Username, payload.Password, payload.IsActive)
-	if err!=nil{
+	if err != nil {
 		return err
 	}
 	return nil

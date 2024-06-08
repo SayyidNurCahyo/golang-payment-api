@@ -2,64 +2,65 @@ package service
 
 import (
 	"fmt"
+	"merchant-payment-api/dto"
 	"merchant-payment-api/model"
 	"merchant-payment-api/repository"
 )
 
 type BankService interface {
-	Create(payload model.Bank) error
 	Delete(id string) error
-	FindAll() ([]model.Bank, error)
-	FindById(id string) (model.Bank, error)
-	Update(payload model.Bank) error
+	FindAll() ([]dto.GetBankResponse, error)
+	FindById(id string) (dto.GetBankResponse, error)
+	Update(payload dto.UpdateBankRequest) error
 }
 
 type bankService struct {
-	repo repository.BankRepository
+	bankRepo repository.BankRepository
 }
 
-func (m *bankService) Create(payload model.Bank) error {
-	if payload.Name==""{
-		return fmt.Errorf("name is required")
-	}
-
-	err := m.repo.Save(payload)
-	if err!=nil{
-		return fmt.Errorf("failed to create new bank: %v", err)
-	}
-	return nil
-}
-
-func (m *bankService) Delete(id string) error {
-	bank, err := m.FindById(id)
+func (b *bankService) Delete(id string) error {
+	bank, err := b.bankRepo.FindById(id)
 	if err!=nil{
 		return fmt.Errorf("bank not found")
 	}
 
-	err = m.repo.DeleteById(bank.Id)
+	err = b.bankRepo.DeleteById(bank.Id)
 	if err!=nil{
 		return fmt.Errorf("failed to delete bank: %v", err)
 	}
 	return nil
 }
 
-func (m *bankService) FindAll() ([]model.Bank, error) {
-	banks, err := m.repo.FindAll()
+func (b *bankService) FindAll() ([]dto.GetBankResponse, error) {
+	banks, err := b.bankRepo.FindAll()
 	if err!= nil{
 		return nil, fmt.Errorf("failed to get all bank: %v", err)
 	}
-	return banks, nil
-}
-
-func (m *bankService) FindById(id string) (model.Bank, error) {
-	bank, err := m.repo.FindById(id)
-	if err!=nil{
-		return model.Bank{}, fmt.Errorf("bank not found")
+	responses := make([]dto.GetBankResponse, 0, len(banks))
+	for _, bank := range banks {
+		response := dto.GetBankResponse{
+			Id: bank.Id,
+			Name: bank.Name,
+			Username: bank.UserCredential.Username,
+		}
+		responses = append(responses, response)
 	}
-	return bank, nil
+	return responses, nil
 }
 
-func (m *bankService) Update(payload model.Bank) error {
+func (b *bankService) FindById(id string) (dto.GetBankResponse, error) {
+	bank, err := b.bankRepo.FindById(id)
+	if err!=nil{
+		return dto.GetBankResponse{}, fmt.Errorf("bank not found")
+	}
+	return dto.GetBankResponse{
+		Id: bank.Id,
+		Name: bank.Name,
+		Username: bank.UserCredential.Username,
+	}, nil
+}
+
+func (b *bankService) Update(payload dto.UpdateBankRequest) error {
 	if payload.Id == ""{
 		return fmt.Errorf("id is required")
 	}
@@ -67,12 +68,16 @@ func (m *bankService) Update(payload model.Bank) error {
 		return fmt.Errorf("name is required")
 	}
 
-	_, err := m.FindById(payload.Id)
+	currentBank, err := b.bankRepo.FindById(payload.Id)
 	if err!= nil{
 		return err
 	}
 
-	err = m.repo.Update(payload)
+	bank := model.Bank{
+		Id: currentBank.Id,
+		Name: payload.Name,
+	}
+	err = b.bankRepo.Update(bank)
 	if err!=nil{
 		return fmt.Errorf("failed to update bank: %v", err)
 	}
@@ -80,5 +85,7 @@ func (m *bankService) Update(payload model.Bank) error {
 }
 
 func NewBankService(repo repository.BankRepository) BankService {
-	return &bankService{repo: repo}
+	return &bankService{
+		bankRepo: repo,
+	}
 }

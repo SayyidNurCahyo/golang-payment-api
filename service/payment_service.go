@@ -36,11 +36,11 @@ func (p *paymentService) CreatePayment(payload model.Payment) (model.Payment, er
 		return model.Payment{}, fmt.Errorf("merchant not found")
 	}
 	payment.Merchant = merchant
-	bank, err := p.bankService.FindById(payload.Bank.Id)
-	if err != nil {
-		return model.Payment{}, fmt.Errorf("bank not found")
-	}
-	payment.Bank = bank
+	// bank, err := p.bankService.FindById(payload.Bank.Id)
+	// if err != nil {
+	// 	return model.Payment{}, fmt.Errorf("bank not found")
+	// }
+	// payment.Bank = bank
 	paymentDetails := make([]model.PaymentDetail, 0, len(payload.Details))
 	for _, detail := range payload.Details {
 		product, err := p.productService.FindById(detail.Product.Id)

@@ -3,13 +3,12 @@ package service
 import (
 	"fmt"
 	"merchant-payment-api/dto"
-	"merchant-payment-api/model"
 	"merchant-payment-api/repository"
 	"merchant-payment-api/security"
 )
 
 type AuthService interface {
-	Login(payload model.UserCredential) (dto.LoginResponse, error)
+	Login(payload dto.LoginRequest) (dto.LoginResponse, error)
 }
 
 type authService struct {
@@ -17,7 +16,7 @@ type authService struct {
 }
 
 // Login implements AuthService.
-func (a *authService) Login(payload model.UserCredential) (dto.LoginResponse, error) {
+func (a *authService) Login(payload dto.LoginRequest) (dto.LoginResponse, error) {
 	user, err := a.repo.FindByUsername(payload.Username)
 	if err!=nil{
 		return dto.LoginResponse{}, fmt.Errorf("unauthorized: invalid credential")

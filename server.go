@@ -43,6 +43,7 @@ func (s *Server) initController() {
 	controller.NewMerchantController(s.merchantService, s.engine)
 	controller.NewPaymentController(s.paymentService, s.engine)
 	controller.NewAuthController(s.userService, s.authService, s.engine)
+	controller.NewBankController(s.bankService, s.engine)
 }
 
 func NewServer() *Server {
@@ -69,7 +70,7 @@ func NewServer() *Server {
 	paymentService := service.NewPaymentService(paymentRepo, customerService, merchantService, bankService, productService)
 	userRepo := repository.NewUserRepo(db)
 	authService := service.NewAuthService(userRepo)
-	userService := service.NewUserService(userRepo)
+	userService := service.NewUserService(userRepo, bankRepo)
 
 	host := fmt.Sprintf(":%s", cfg.ApiPort)
 	log := logrus.New()

@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"merchant-payment-api/model"
+	"merchant-payment-api/dto"
 	"merchant-payment-api/service"
 	"net/http"
 
@@ -15,7 +15,7 @@ type AuthController struct {
 }
 
 func (a *AuthController) loginHandler(c *gin.Context){
-	var auth model.UserCredential
+	var auth dto.LoginRequest
 	if err := c.ShouldBindJSON(&auth); err!=nil{
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
@@ -37,8 +37,8 @@ func (a *AuthController) loginHandler(c *gin.Context){
 	})
 }
 
-func (a *AuthController) registerHandler(c *gin.Context){
-	var auth model.UserCredential
+func (a *AuthController) registerBankHandler(c *gin.Context){
+	var auth dto.SaveBankRequest
 	if err := c.ShouldBindJSON(&auth); err!=nil{
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
@@ -46,7 +46,7 @@ func (a *AuthController) registerHandler(c *gin.Context){
 		return
 	}
 
-	err := a.userService.Register(auth)
+	err := a.userService.RegisterBank(auth)
 	if err!=nil{
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -67,5 +67,5 @@ func NewAuthController(userService service.UserService, authService service.Auth
 	}
 	rg := engine.Group("/api/v1")
 	rg.POST("/auth/login", controller.loginHandler)
-	rg.GET("/auth/register", controller.registerHandler)
+	rg.POST("/auth/registerBank", controller.registerBankHandler)
 }
